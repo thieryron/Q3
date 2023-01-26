@@ -1,0 +1,38 @@
+SERVER:
+
+import random
+import threading
+import socket
+
+#array of quotes
+quotes = [“”IT IS WHAT IT IS””, “”LIFE GOES ON””, “”IS THIS ALL YOU GOT???””]
+
+#choose random quotes from array and send to client
+def handle_client(client_socket):
+quote = random.choice(quotes)
+client_socket.sendall(quote.encode())
+client_socket.close()
+
+def main():
+#declare server and port
+bind_ip = “192.168.100.209”
+bind_port = 8888
+
+#create and bind socket
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+server.bind(bind_ip, bind_port))
+
+#fetch connections
+server.listen(3)
+print(“[*] Listening on %s:%d for request ” % (bind_ip, bind_port))
+
+#start connection
+while True:
+client, add = server.accept()
+print(“[*] Accepted connection from %s” % str(add))
+client_handler = threading.Thread(target=handle_client, args=(client,))
+client_handler.start()
+
+main()
+
